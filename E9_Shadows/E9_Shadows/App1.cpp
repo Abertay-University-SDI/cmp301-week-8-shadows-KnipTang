@@ -114,7 +114,9 @@ void App1::depthPass()
 	worldMatrix = renderer->getWorldMatrix();
 	worldMatrix = XMMatrixTranslation(5.f, 2.f, 5.f);
 	scaleMatrix = XMMatrixScaling(5.f, 5.f, 0.5f);
+	XMMATRIX rotationMatrix = XMMatrixRotationX(rotation);
 	worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
+	worldMatrix = XMMatrixMultiply(worldMatrix, rotationMatrix);
 	cubeMesh->sendData(renderer->getDeviceContext());
 	depthShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
 	depthShader->render(renderer->getDeviceContext(), cubeMesh->getIndexCount());
@@ -154,7 +156,9 @@ void App1::finalPass()
 	worldMatrix = renderer->getWorldMatrix();
 	worldMatrix = XMMatrixTranslation(5.f, 2.f, 5.f);
 	scaleMatrix = XMMatrixScaling(5.f, 5.f, 0.5f);
+	XMMATRIX rotationMatrix = XMMatrixRotationX(rotation);
 	worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
+	worldMatrix = XMMatrixMultiply(worldMatrix, rotationMatrix);
 	cubeMesh->sendData(renderer->getDeviceContext());
 	shadowShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture(L"brick"), shadowMap->getDepthMapSRV(), light);
 	shadowShader->render(renderer->getDeviceContext(), cubeMesh->getIndexCount());
@@ -183,6 +187,11 @@ void App1::gui()
 	// Build UI
 	ImGui::Text("FPS: %.2f", timer->getFPS());
 	ImGui::Checkbox("Wireframe mode", &wireframeToggle);
+
+	if (rotation < 360)
+		rotation+= 0.001f;
+	else
+		rotation = 0;
 
 	// Render UI
 	ImGui::Render();

@@ -35,6 +35,8 @@ private:
 	ShadowShader* shadowShader;
 	DepthShader* depthShader;
 
+	float rotation = 5;
+
 	ShadowMap* shadowMap;
 };
 
