@@ -14,6 +14,7 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 
 	// Create Mesh object and shader object
 	mesh = new PlaneMesh(renderer->getDevice(), renderer->getDeviceContext());
+	orthoMesh = new OrthoMesh(renderer->getDevice(), renderer->getDeviceContext(), 400,400, -screenWidth/2, screenHeight/2);
 	model = new AModel(renderer->getDevice(), "res/teapot.obj");
 	textureMgr->loadTexture(L"brick", L"res/brick1.dds");
 
@@ -116,7 +117,7 @@ void App1::depthPass()
 void App1::finalPass()
 {
 	// Clear the scene. (default blue colour)
-	renderer->beginScene(0.39f, 0.58f, 0.92f, 1.0f);
+	renderer->beginScene(0.0f, 0.58f, 0.92f, 1.0f);
 	camera->update();
 
 	// get the world, view, projection, and ortho matrices from the camera and Direct3D objects.
@@ -139,6 +140,14 @@ void App1::finalPass()
 	model->sendData(renderer->getDeviceContext());
 	shadowShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture(L"brick"), shadowMap->getDepthMapSRV(), light);
 	shadowShader->render(renderer->getDeviceContext(), model->getIndexCount());
+
+	renderer->setZBuffer(false);
+	XMMATRIX orthoMatrix = renderer->getOrthoMatrix();
+	XMMATRIX orthoViewMatrix = camera->getOrthoViewMatrix();
+	orthoMesh->sendData(renderer->getDeviceContext());
+	textureShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, orthoViewMatrix, orthoMatrix, shadowMap->getDepthMapSRV());
+	textureShader->render(renderer->getDeviceContext(), orthoMesh->getIndexCount());
+	renderer->setZBuffer(true);
 
 	gui();
 	renderer->endScene();
