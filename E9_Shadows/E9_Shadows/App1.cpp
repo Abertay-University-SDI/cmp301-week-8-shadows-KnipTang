@@ -17,6 +17,8 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	orthoMesh = new OrthoMesh(renderer->getDevice(), renderer->getDeviceContext(), 400,400, -screenWidth/2, screenHeight/2);
 	model = new AModel(renderer->getDevice(), "res/teapot.obj");
 	cubeMesh = new CubeMesh(renderer->getDevice(), renderer->getDeviceContext());
+	sunMesh = new SphereMesh(renderer->getDevice(), renderer->getDeviceContext());
+
 
 	textureMgr->loadTexture(L"brick", L"res/brick1.dds");
 
@@ -38,8 +40,8 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	light = new Light();
 	light->setAmbientColour(0.3f, 0.3f, 0.3f, 1.0f);
 	light->setDiffuseColour(1.0f, 1.0f, 1.0f, 1.0f);
-	light->setDirection(0.0f, -0.7f, 0.7f);
-	light->setPosition(0.f, 0.f, -10.f);
+	light->setDirection(lampDir[0], lampDir[1], lampDir[2]);
+	light->setPosition(lampPos[0], lampPos[1], lampPos[2]);
 	light->generateOrthoMatrix((float)sceneWidth, (float)sceneHeight, 0.1f, 100.f);
 
 }
@@ -137,6 +139,12 @@ void App1::finalPass()
 	XMMATRIX viewMatrix = camera->getViewMatrix();
 	XMMATRIX projectionMatrix = renderer->getProjectionMatrix();
 
+	worldMatrix = XMMatrixTranslation(lampPos[0], lampPos[1], lampPos[2]);
+	sunMesh->sendData(renderer->getDeviceContext());
+	textureShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix,
+		textureMgr->getTexture(L"brick"));
+	textureShader->render(renderer->getDeviceContext(), sunMesh->getIndexCount());
+
 	worldMatrix = XMMatrixTranslation(-50.f, 0.f, -10.f);
 	// Render floor
 	mesh->sendData(renderer->getDeviceContext());
@@ -187,6 +195,12 @@ void App1::gui()
 	// Build UI
 	ImGui::Text("FPS: %.2f", timer->getFPS());
 	ImGui::Checkbox("Wireframe mode", &wireframeToggle);
+
+	ImGui::SliderFloat3("lamp dir", lampDir, -1, 1);
+	ImGui::SliderFloat3("lamp pos", lampPos, -50, 50);
+
+	light->setDirection(lampDir[0], lampDir[1], lampDir[2]);
+	light->setPosition(lampPos[0], lampPos[1], lampPos[2]);
 
 	if (rotation < 360)
 		rotation+= 0.001f;

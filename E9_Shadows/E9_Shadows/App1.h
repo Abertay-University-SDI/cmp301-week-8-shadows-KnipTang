@@ -32,10 +32,13 @@ private:
 	Light* light;
 	AModel* model;
 	CubeMesh* cubeMesh;
+	SphereMesh* sunMesh;
 	ShadowShader* shadowShader;
 	DepthShader* depthShader;
 
 	float rotation = 5;
+	float lampDir[3] = { 0.0f, -0.7f, 0.7f };
+	float lampPos[3] = { 0.f, 0.f, -10.f };
 
 	ShadowMap* shadowMap;
 };
