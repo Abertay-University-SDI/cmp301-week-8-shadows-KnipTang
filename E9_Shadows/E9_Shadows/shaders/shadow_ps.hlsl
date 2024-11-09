@@ -1,6 +1,8 @@
 
+static const int MAX_LIGHTS = 5;
+
 Texture2D shaderTexture : register(t0);
-Texture2D depthMapTexture : register(t1);
+Texture2D depthMapTexture[MAX_LIGHTS] : register(t1);
 
 SamplerState diffuseSampler  : register(s0);
 SamplerState shadowSampler : register(s1);
@@ -76,10 +78,13 @@ float4 main(InputType input) : SV_TARGET
     if (hasDepthData(pTexCoord))
     {
         // Has depth map data
-        if (!isInShadow(depthMapTexture, pTexCoord, input.lightViewPos, shadowMapBias))
+        for (int i = 0; i < MAX_LIGHTS; i++)
         {
-            // is NOT in shadow, therefore light
-            colour = calculateLighting(-direction, input.normal, diffuse);
+            if (!isInShadow(depthMapTexture[i], pTexCoord, input.lightViewPos, shadowMapBias))
+            {
+                // is NOT in shadow, therefore light
+                colour = calculateLighting(-direction, input.normal, diffuse);
+            }
         }
     }
     

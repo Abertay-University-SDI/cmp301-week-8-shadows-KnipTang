@@ -28,8 +28,10 @@ private:
 	TextureShader* textureShader;
 	PlaneMesh* mesh;
 	OrthoMesh* orthoMesh;
+	OrthoMesh* orthoMesh2;
 
 	Light* light;
+	Light* light2;
 	AModel* model;
 	CubeMesh* cubeMesh;
 	SphereMesh* sunMesh;
@@ -39,8 +41,11 @@ private:
 	float rotation = 5;
 	float lampDir[3] = { 0.0f, -0.7f, 0.7f };
 	float lampPos[3] = { 0.f, 0.f, -10.f };
+	float lampDir2[3] = { 0.0f, -0.7f, -0.7f };
+	float lampPos2[3] = { 0.f, 0.f, 20.f };
 
 	ShadowMap* shadowMap;
+	ShadowMap* shadowMap2;
 };
 
 #endif
