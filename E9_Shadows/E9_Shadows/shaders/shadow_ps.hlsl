@@ -70,8 +70,9 @@ float4 main(InputType input) : SV_TARGET
     float shadowMapBias = 0.005f;
     float4 colour = float4(0.f, 0.f, 0.f, 1.f);
     float4 textureColour = shaderTexture.Sample(diffuseSampler, input.tex);
-
+    
 	// Calculate the projected texture coordinates.
+    float finalShadow = 1.f;
 	
     for (int i = 0; i < MAX_LIGHTS; i++)
     {
@@ -82,17 +83,21 @@ float4 main(InputType input) : SV_TARGET
             // Has depth map data
             if (isInShadow(depthMapTexture[i], pTexCoord, input.lightViewPos[i], shadowMapBias, shadowSamplers[i]))
             {
-                // is NOT in shadow, therefore light
-                colour += calculateLighting(-direction[i].xyz, input.normal, diffuse[i]);
-            }
-            else
-            {
-                colour += float4(0.f, 0.f, 0.f, 1.f);
+                // is in shadow, therefore light
+                finalShadow *= 0;
+                //colour += float4(0.f, 0.f, 0.f, 1.f);
             }
         }
-    
-        colour = saturate(colour + ambient[i]);
     }
+    
+    for (int j = 0; j < MAX_LIGHTS; j++)
+    {
+        if (finalShadow > 0)
+            colour += calculateLighting(-direction[j].xyz, input.normal, diffuse[j]);
+
+        
+    }
+    colour = saturate(colour + ambient[0]);
     
     return saturate(colour) * textureColour;
 }

@@ -21,7 +21,7 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	sunMesh = new SphereMesh(renderer->getDevice(), renderer->getDeviceContext());
 	sunMesh2 = new SphereMesh(renderer->getDevice(), renderer->getDeviceContext());
 
-
+	
 	textureMgr->loadTexture(L"brick", L"res/brick1.dds");
 
 	// initial shaders
@@ -41,14 +41,14 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 
 	// Configure directional light
 	light = new Light();
-	light->setAmbientColour(0.8f, 0.3f, 0.3f, 1.0f);
+	light->setAmbientColour(0.3f, 0.3f, 0.3f, 1.0f);
 	light->setDiffuseColour(1.0f, 1.0f, 1.0f, 1.0f);
 	light->setDirection(lampDir[0], lampDir[1], lampDir[2]);
 	light->setPosition(lampPos[0], lampPos[1], lampPos[2]);
 	light->generateOrthoMatrix((float)sceneWidth, (float)sceneHeight, 0.1f, 100.f);
 
 	light2 = new Light();
-	light2->setAmbientColour(0.3f, 0.3f, 0.8f, 1.0f);
+	light2->setAmbientColour(0.3f, 0.3f, 0.3f, 1.0f);
 	light2->setDiffuseColour(1.0f, 1.0f, 1.0f, 1.0f);
 	light2->setDirection(lampDir2[0], lampDir2[1], lampDir2[2]);
 	light2->setPosition(lampPos2[0], lampPos2[1], lampPos2[2]);
@@ -114,7 +114,7 @@ void App1::depthPass()
 	depthShader->render(renderer->getDeviceContext(), mesh->getIndexCount());
 
 	worldMatrix = renderer->getWorldMatrix();
-	worldMatrix = XMMatrixTranslation(0.f, 7.f, 5.f);
+	worldMatrix = XMMatrixTranslation(0.f, 5.f, 5.f);
 	XMMATRIX scaleMatrix = XMMatrixScaling(0.5f, 0.5f, 0.5f);
 	worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
 	// Render model
@@ -152,7 +152,7 @@ void App1::depthPass()
 	depthShader->render(renderer->getDeviceContext(), mesh->getIndexCount());
 
 	worldMatrix = renderer->getWorldMatrix();
-	worldMatrix = XMMatrixTranslation(0.f, 7.f, 5.f);
+	worldMatrix = XMMatrixTranslation(0.f, 5.f, 5.f);
 	scaleMatrix = XMMatrixScaling(0.5f, 0.5f, 0.5f);
 	worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
 	// Render model
