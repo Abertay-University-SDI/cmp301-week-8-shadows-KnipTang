@@ -35,6 +35,7 @@ private:
 	AModel* model;
 	CubeMesh* cubeMesh;
 	SphereMesh* sunMesh;
+	SphereMesh* sunMesh2;
 	ShadowShader* shadowShader;
 	DepthShader* depthShader;
 
